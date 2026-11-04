@@ -1,3 +1,5 @@
+![Uploading image.png…]()
+
 # GitLab Cloud Ingestion Connector
 
 A high-performance, production-grade cloud ingestion connector built in Go. It incrementally extracts event streams from the **GitLab Cloud REST API** (free tier compatible), manages state using **Redis** watermarking checkpoints, routes data to pluggable destinations (Stdout, NDJSON File, HTTP Webhook, Redis), serves an embedded **Web UI Dashboard**, and deploys declaratively via **Kubernetes** and **ArgoCD GitOps**.
