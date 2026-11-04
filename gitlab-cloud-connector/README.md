@@ -228,6 +228,3 @@ To deploy via ArgoCD:
 4. ArgoCD will automatically detect changes, synchronize manifests, self-heal drift, and manage lifecycle rollouts.
 
 ---
-
-## 🔒 License & Copyright Cleanliness
-This codebase is 100% original, written from scratch, and does not contain any proprietary or copyrighted code. You are completely free to push this project to your public GitHub profile and feature it on your resume.
