@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gitlab-connector-batch-sync
+  labels:
+    app.kubernetes.io/name: gitlab-cloud-connector
+    app.kubernetes.io/component: batch-sync
+spec:
+  # Run batch sync every 15 minutes
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: gitlab-cloud-connector-batch
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: batch-connector
+              image: gitlab-cloud-connector:latest
+              imagePullPolicy: IfNotPresent
+              args: ["-once"]
+              envFrom:
+                - configMapRef:
+                    name: gitlab-connector-config
+                - secretRef:
+                    name: gitlab-connector-secret
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi

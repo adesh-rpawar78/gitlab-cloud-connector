@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab-cloud-connector
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: gitlab-cloud-connector
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # Replace with your GitHub / GitLab repository URL after pushing
+    repoURL: "https://github.com/your-username/gitlab-cloud-connector.git"
+    targetRevision: main
+    path: deploy/k8s
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

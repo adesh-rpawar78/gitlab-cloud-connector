@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-cloud-connector
+  labels:
+    app.kubernetes.io/name: gitlab-cloud-connector
+    app.kubernetes.io/part-of: gitlab-cloud-connector
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  # Connector runs as singleton per source project to guarantee checkpoint ordering & prevent duplicate ingestion
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gitlab-cloud-connector
+  template:
+    metadata:
+      labels:
+        app: gitlab-cloud-connector
+    spec:
+      containers:
+        - name: connector
+          image: gitlab-cloud-connector:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: gitlab-connector-config
+            - secretRef:
+                name: gitlab-connector-secret
+          ports:
+            - containerPort: 8080
+              name: http-web
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - ALL

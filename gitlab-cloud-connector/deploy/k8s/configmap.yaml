@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-connector-config
+  labels:
+    app.kubernetes.io/name: gitlab-cloud-connector
+    app.kubernetes.io/part-of: gitlab-cloud-connector
+data:
+  GITLAB_BASE_URL: "https://gitlab.com"
+  GITLAB_PROJECT_ID: "278964" # GitLab FOSS (Free Open Source Project)
+  PAGE_SIZE: "20"
+  POLL_INTERVAL: "30s"
+  DESTINATION_TYPE: "redis" # Broadcasts to Redis list & provides live Web UI
+  REDIS_ADDR: "redis:6379"
+  PORT: "8080"
